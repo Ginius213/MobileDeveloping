@@ -1,14 +1,12 @@
 package com.example.myapplication.screens
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -28,7 +26,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -43,11 +40,12 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 @Composable
-fun MainCard(currentDay: MutableState<WeatherModel>) {
+fun MainCard(currentDay: MutableState<WeatherModel>, onClickSync: () -> Unit, onClickSearch: () -> Unit) {
     Column(
         modifier = Modifier
             .padding(5.dp),
-    ) {
+
+        ) {
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
@@ -57,6 +55,7 @@ fun MainCard(currentDay: MutableState<WeatherModel>) {
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 0.dp
             )
+
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -86,6 +85,7 @@ fun MainCard(currentDay: MutableState<WeatherModel>) {
                                 )
                                 .size(35.dp)
                         )
+
                     }
                     Text(
                         text = currentDay.value.city,
@@ -93,7 +93,10 @@ fun MainCard(currentDay: MutableState<WeatherModel>) {
                         color = Color.White
                     )
                     Text(
-                        text = currentDay.value.currentTemp.toFloat().toInt().toString() + "°C",
+                        text = if(currentDay.value.currentTemp.isNotEmpty())
+                            currentDay.value.currentTemp.toFloat().toInt().toString() + "°C"
+                        else currentDay.value.maxTemp.toFloat().toInt().toString() +
+                                "°C/${currentDay.value.minTemp.toFloat().toInt()}°C",
                         style = TextStyle(fontSize = 65.sp),
                         color = Color.White
                     )
@@ -108,30 +111,33 @@ fun MainCard(currentDay: MutableState<WeatherModel>) {
                     ) {
                         IconButton(
                             onClick = {
+                                onClickSearch.invoke()
                             }
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_search),
                                 contentDescription = "im3",
                                 tint = Color.White
+
                             )
                         }
                         Text(
-                            text = if(currentDay.value.currentTemp.isNotEmpty())
-                                currentDay.value.currentTemp.toFloat().toInt().toString() + "°C"
-                            else currentDay.value.maxTemp.toFloat().toInt().toString() +
-                                    "°C/${currentDay.value.minTemp.toFloat().toInt()}°C",
+                            text = "${currentDay.value
+                                .maxTemp.toFloat().toInt()}°C/${currentDay
+                                .value.minTemp.toFloat().toInt()}°C",
                             style = TextStyle(fontSize = 16.sp),
                             color = Color.White
                         )
                         IconButton(
                             onClick = {
+                                onClickSync.invoke()
                             }
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_sync),
                                 contentDescription = "im4",
                                 tint = Color.White
+
                             )
                         }
                     }
@@ -143,13 +149,14 @@ fun MainCard(currentDay: MutableState<WeatherModel>) {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TabLayout(daysList: MutableState<List<WeatherModel>>, currentDay: MutableState<WeatherModel>) {
     val tabList = listOf("HOURS", "DAYS")
-    val pagerState = rememberPagerState()
+    val pagerState = androidx.compose.foundation.pager.rememberPagerState()
     val tabIndex = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .padding(
@@ -184,21 +191,22 @@ fun TabLayout(daysList: MutableState<List<WeatherModel>>, currentDay: MutableSta
                 )
             }
         }
-        HorizontalPager(
-            count = tabList.size,
+        androidx.compose.foundation.pager.HorizontalPager(
+            pageCount = tabList.size,
             state = pagerState,
             modifier = Modifier.weight(1.0f)
         ) { index ->
-            val list = when(index){
+            val list = when (index) {
                 0 -> getWeatherByHours(currentDay.value.hours)
                 1 -> daysList.value
                 else -> daysList.value
             }
             MainList(list, currentDay)
-            }
         }
     }
 
+
+}
 
 private fun getWeatherByHours(hours: String): List<WeatherModel>{
     if( hours.isEmpty()) return listOf()
