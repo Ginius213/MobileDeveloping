@@ -6,7 +6,7 @@
         <item>Деревья</item>
         <item>Фрукты</item>
         <item>Овощи</item>
-
+    </string-array>
         <string-array name="mushrooms">
             <item>Лисичка|lesichka.png</item>
             <item>Мухамор|muhamor.png</item>
@@ -27,5 +27,5 @@
             <item>Капуста|kapusta.png</item>
             <item>Свекла|svekla.png</item>
         </string-array>
-    </string-array>
+
 </resources>
