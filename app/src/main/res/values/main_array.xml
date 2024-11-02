@@ -6,5 +6,26 @@
         <item>Деревья</item>
         <item>Фрукты</item>
         <item>Овощи</item>
+
+        <string-array name="mushrooms">
+            <item>Лисичка|lesichka.png</item>
+            <item>Мухамор|muhamor.png</item>
+        </string-array>
+        <string-array name="medicinal_herbs">
+            <item>Ромашка|romashka.png</item>
+            <item>Крапива|krapiva.png</item>
+        </string-array>
+        <string-array name="trees">
+            <item>Тополь|topol.png</item>
+            <item>Дуб|dub.png</item>
+        </string-array>
+        <string-array name="fruits">
+            <item>Апельсин|apelsin.png</item>
+            <item>Яблоко|yabloco.png</item>
+        </string-array>
+        <string-array name="vegetables">
+            <item>Капуста|kapusta.png</item>
+            <item>Свекла|svekla.png</item>
+        </string-array>
     </string-array>
 </resources>
