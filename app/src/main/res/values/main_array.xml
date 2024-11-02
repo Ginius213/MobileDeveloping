@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="drawer_list">
+        <item>Грибы</item>
+        <item>Лечебные травы</item>
+        <item>Деревья</item>
+        <item>Фрукты</item>
+        <item>Овощи</item>
+    </string-array>
+</resources>
