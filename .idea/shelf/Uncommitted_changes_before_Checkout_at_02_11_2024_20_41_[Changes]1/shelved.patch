@@ -1,0 +1,235 @@
+Index: app/src/main/java/com/example/myapplication/MainActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.myapplication\r\n\r\nimport android.content.Context\r\nimport android.os.Bundle\r\nimport android.util.Log\r\nimport androidx.activity.ComponentActivity\r\nimport androidx.activity.compose.setContent\r\nimport androidx.compose.foundation.Image\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.runtime.MutableState\r\nimport androidx.compose.runtime.mutableStateOf\r\nimport androidx.compose.runtime.remember\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.draw.alpha\r\nimport androidx.compose.ui.layout.ContentScale\r\nimport androidx.compose.ui.res.painterResource\r\nimport com.android.volley.Request\r\nimport com.android.volley.toolbox.StringRequest\r\nimport com.android.volley.toolbox.Volley\r\nimport com.example.myapplication.data.WeatherModel\r\nimport com.example.myapplication.screens.DialogSearch\r\nimport com.example.myapplication.screens.MainCard\r\nimport com.example.myapplication.screens.TabLayout\r\nimport com.example.myapplication.ui.theme.MyApplicationTheme\r\nimport org.json.JSONObject\r\n\r\nconst val API_KEY = \"7f6eebb6101546f29f2122941242210\"\r\nclass MainActivity : ComponentActivity() {\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        setContent {\r\n            MyApplicationTheme {\r\n                val daysList = remember {\r\n                    mutableStateOf(listOf<WeatherModel>())\r\n                }\r\n                val dialogState = remember {\r\n                    mutableStateOf(false)\r\n                }\r\n                val currentDay = remember {\r\n                    mutableStateOf(WeatherModel(\r\n                    \"\",\r\n                    \"\",\r\n                    \"0.0\",\r\n                    \"\",\r\n                    \"\",\r\n                    \"0.0\",\r\n                    \"0.0\",\r\n                    \"\",\r\n                    )\r\n                    )\r\n                }\r\n                if(dialogState.value){\r\n                    DialogSearch(dialogState, onSumbit = {\r\n                        getData(it, this, daysList, currentDay)\r\n                    })\r\n                }\r\n                getData(\"London\", this, daysList, currentDay)\r\n                Image(\r\n                    painter = painterResource(id = R.drawable.background_im),\r\n                    contentDescription = \"im1\",\r\n                    modifier = Modifier\r\n                        .fillMaxSize()\r\n                        .alpha(0.7f),\r\n                    contentScale = ContentScale.FillHeight\r\n                )\r\n                Column {\r\n                    MainCard(currentDay, onClickSync = {\r\n                        getData(\"London\", this@MainActivity, daysList, currentDay)\r\n                    }, onClickSearch = {\r\n                        dialogState.value = true\r\n                    }\r\n                    )\r\n                    TabLayout(daysList, currentDay)\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n\r\nprivate fun getData(city: String, context: Context,\r\n                    daysList: MutableState<List<WeatherModel>>,\r\n                    currentDay: MutableState<WeatherModel>){\r\n    val url = \"https://api.weatherapi.com/v1/forecast.json?key=$API_KEY\" +\r\n            \"&q=$city\"+\r\n            \"&days=\" +\r\n            \"3\" +\r\n            \"&aqi=no&alerts=no\\n\"\r\n    val queue = Volley.newRequestQueue(context)\r\n    val sRequest = StringRequest(\r\n        Request.Method.GET,\r\n        url,\r\n        {\r\n            response ->\r\n            val list = getWeatherByDays(response)\r\n            currentDay.value = list[0]\r\n            daysList.value = list\r\n        },\r\n        {\r\n            Log.d(\"MyLog\", \"VolleyError $it\")\r\n        }\r\n    )\r\n    queue.add(sRequest)\r\n}\r\n\r\nprivate fun getWeatherByDays(response: String): List<WeatherModel> {\r\n    if (response.isEmpty()) return listOf()\r\n    val list = ArrayList<WeatherModel>()\r\n    val mainObject = JSONObject(response)\r\n    val city = mainObject.getJSONObject(\"location\").getString(\"name\")\r\n    val days = mainObject.getJSONObject(\"forecast\").getJSONArray(\"forecastday\")\r\n    for (i in 0 until days.length()) {\r\n        val item = days[i] as JSONObject\r\n        list.add(\r\n            WeatherModel(\r\n                city,\r\n                item.getString(\"date\"),\r\n                \"\",\r\n                item.getJSONObject(\"day\").getJSONObject(\"condition\")\r\n                    .getString(\"text\"),\r\n                item.getJSONObject(\"day\").getJSONObject(\"condition\")\r\n                    .getString(\"icon\"),\r\n                item.getJSONObject(\"day\").getString(\"maxtemp_c\"),\r\n                item.getJSONObject(\"day\").getString(\"mintemp_c\"),\r\n                item.getJSONArray(\"hour\").toString()\r\n            )\r\n        )\r\n    }\r\n    list[0] = list[0].copy(\r\n        time = mainObject.getJSONObject(\"current\").getString(\"last_updated\"),\r\n        currentTemp = mainObject.getJSONObject(\"current\").getString(\"temp_c\")\r\n    )\r\n    return list\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/myapplication/MainActivity.kt b/app/src/main/java/com/example/myapplication/MainActivity.kt
+--- a/app/src/main/java/com/example/myapplication/MainActivity.kt	
++++ b/app/src/main/java/com/example/myapplication/MainActivity.kt	
+@@ -1,8 +1,4 @@
+-package com.example.myapplication
+-
+-import android.content.Context
+ import android.os.Bundle
+-import android.util.Log
+ import androidx.activity.ComponentActivity
+ import androidx.activity.compose.setContent
+ import androidx.compose.foundation.Image
+@@ -30,23 +26,24 @@
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+         setContent {
+-            MyApplicationTheme {
++            MyApplicationTheme() {
+                 val daysList = remember {
+                     mutableStateOf(listOf<WeatherModel>())
+                 }
+                 val dialogState = remember {
+                     mutableStateOf(false)
+                 }
++
+                 val currentDay = remember {
+                     mutableStateOf(WeatherModel(
+-                    "",
+-                    "",
+-                    "0.0",
+-                    "",
+-                    "",
+-                    "0.0",
+-                    "0.0",
+-                    "",
++                        "",
++                        "",
++                        "0.0",
++                        "",
++                        "",
++                        "0.0",
++                        "0.0",
++                        "",
+                     )
+                     )
+                 }
+@@ -57,14 +54,15 @@
+                 }
+                 getData("London", this, daysList, currentDay)
+                 Image(
+-                    painter = painterResource(id = R.drawable.background_im),
++                    painter = painterResource(id = R.drawable.weather_bg),
+                     contentDescription = "im1",
+                     modifier = Modifier
+                         .fillMaxSize()
+                         .alpha(0.7f),
+-                    contentScale = ContentScale.FillHeight
++                    contentScale = ContentScale.Crop
+                 )
+                 Column {
++                    MainCard(currentDay)
+                     MainCard(currentDay, onClickSync = {
+                         getData("London", this@MainActivity, daysList, currentDay)
+                     }, onClickSearch = {
+@@ -73,10 +71,13 @@
+                     )
+                     TabLayout(daysList, currentDay)
+                 }
++
++
+             }
+         }
+     }
+ }
++
+ 
+ 
+ private fun getData(city: String, context: Context,
+@@ -92,7 +93,7 @@
+         Request.Method.GET,
+         url,
+         {
+-            response ->
++                response ->
+             val list = getWeatherByDays(response)
+             currentDay.value = list[0]
+             daysList.value = list
+@@ -110,6 +111,7 @@
+     val mainObject = JSONObject(response)
+     val city = mainObject.getJSONObject("location").getString("name")
+     val days = mainObject.getJSONObject("forecast").getJSONArray("forecastday")
++
+     for (i in 0 until days.length()) {
+         val item = days[i] as JSONObject
+         list.add(
+@@ -132,4 +134,4 @@
+         currentTemp = mainObject.getJSONObject("current").getString("temp_c")
+     )
+     return list
+-}
+\ No newline at end of file
++}
+Index: app/build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    id(\"com.android.application\")\r\n    id(\"org.jetbrains.kotlin.android\")\r\n}\r\n\r\nandroid {\r\n    namespace = \"com.example.myapplication\"\r\n    compileSdk = 34\r\n\r\n    defaultConfig {\r\n        applicationId = \"com.example.myapplication\"\r\n        minSdk = 28\r\n        targetSdk = 33\r\n        versionCode = 1\r\n        versionName = \"1.0\"\r\n\r\n        testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\"\r\n        vectorDrawables {\r\n            useSupportLibrary = true\r\n        }\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            isMinifyEnabled = false\r\n            proguardFiles(\r\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\r\n                \"proguard-rules.pro\"\r\n            )\r\n        }\r\n    }\r\n    compileOptions {\r\n        sourceCompatibility = JavaVersion.VERSION_1_8\r\n        targetCompatibility = JavaVersion.VERSION_1_8\r\n    }\r\n    kotlinOptions {\r\n        jvmTarget = \"1.8\"\r\n    }\r\n    buildFeatures {\r\n        compose = true\r\n    }\r\n    composeOptions {\r\n        kotlinCompilerExtensionVersion = \"1.4.3\"\r\n    }\r\n    packaging {\r\n        resources {\r\n            excludes += \"/META-INF/{AL2.0,LGPL2.1}\"\r\n        }\r\n    }\r\n}\r\n\r\ndependencies {\r\n\r\n    implementation(\"androidx.core:core-ktx:1.9.0\")\r\n    implementation(\"com.google.accompanist:accompanist-pager:0.19.0\")\r\n    implementation(\"com.google.accompanist:accompanist-pager-indicators:0.19.0\")\r\n    implementation(\"com.android.volley:volley:1.2.1\")\r\n    implementation(\"io.coil-kt:coil-compose:2.0.0-rc01\")\r\n    implementation(\"androidx.lifecycle:lifecycle-runtime-ktx:2.8.6\")\r\n    implementation(\"androidx.activity:activity-compose:1.9.2\")\r\n    implementation(platform(\"androidx.compose:compose-bom:2023.03.00\"))\r\n    implementation(\"androidx.compose.ui:ui\")\r\n    implementation(\"androidx.compose.ui:ui-graphics\")\r\n    implementation(\"androidx.compose.ui:ui-tooling-preview\")\r\n    implementation(\"androidx.compose.material3:material3\")\r\n    testImplementation(\"junit:junit:4.13.2\")\r\n    androidTestImplementation(\"androidx.test.ext:junit:1.2.1\")\r\n    androidTestImplementation(\"androidx.test.espresso:espresso-core:3.6.1\")\r\n    androidTestImplementation(platform(\"androidx.compose:compose-bom:2023.03.00\"))\r\n    androidTestImplementation(\"androidx.compose.ui:ui-test-junit4\")\r\n    debugImplementation(\"androidx.compose.ui:ui-tooling\")\r\n    debugImplementation(\"androidx.compose.ui:ui-test-manifest\")\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+--- a/app/build.gradle.kts	
++++ b/app/build.gradle.kts	
+@@ -51,13 +51,14 @@
+ 
+ dependencies {
+ 
+-    implementation("androidx.core:core-ktx:1.9.0")
++    implementation ("com.google.code.gson:gson:2.11.0")
++    implementation ("com.squareup.retrofit2:converter-gson:2.11.0")
++    implementation ("com.squareup.retrofit2:retrofit:2.11.0")
++    implementation("androidx.core:core-ktx:1.13.1")
+     implementation("com.google.accompanist:accompanist-pager:0.19.0")
+     implementation("com.google.accompanist:accompanist-pager-indicators:0.19.0")
+     implementation("com.android.volley:volley:1.2.1")
+     implementation("io.coil-kt:coil-compose:2.0.0-rc01")
+-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
+-    implementation("androidx.activity:activity-compose:1.9.2")
+     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
+     implementation("androidx.compose.ui:ui")
+     implementation("androidx.compose.ui:ui-graphics")
+Index: app/src/main/java/com/example/myapplication/data/WeatherDto.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/myapplication/data/WeatherDto.kt b/app/src/main/java/com/example/myapplication/data/WeatherDto.kt
+new file mode 100644
+--- /dev/null	
++++ b/app/src/main/java/com/example/myapplication/data/WeatherDto.kt	
+@@ -0,0 +1,39 @@
++package com.example.myapplication.data
++
++import com.google.gson.annotations.SerializedName
++import java.io.Serializable
++
++data class WeatherDto(
++    @SerializedName("location") var location: LocationDto,
++    @SerializedName("current") var current: CurrentDto,
++    @SerializedName("forecast") var forecast: ForecastDto
++) : Serializable
++data class LocationDto(
++    @SerializedName("name") var name: String,
++)
++data class ForecastDto (
++    @SerializedName("forecastday" ) var forecastday : ArrayList<ForecastDayDto> = arrayListOf()
++)
++data class ForecastDayDto(
++    @SerializedName("date") var date: String,
++    @SerializedName("day") var day: DayDto,
++    @SerializedName("hour") var hour: ArrayList<HourDto> = arrayListOf()
++) : Serializable
++data class DayDto(
++    @SerializedName("maxtemp_c") var maxTemp: Double,
++    @SerializedName("mintemp_c") var minTemp: Double,
++    @SerializedName("condition") var condition: ConditionDto,
++)
++data class ConditionDto(
++    @SerializedName("text") var text: String,
++    @SerializedName("icon") var icon: String
++)
++data class HourDto(
++    @SerializedName("time") var time: String,
++    @SerializedName("temp_c") var tempC: Double,
++    @SerializedName("condition") var condition: ConditionDto,
++)
++data class CurrentDto(
++    @SerializedName("last_updated") var time: String,
++    @SerializedName("temp_c") var currentTemp: Double,
++)
+\ No newline at end of file
+Index: app/src/main/java/com/example/myapplication/screens/WeatherApi.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/myapplication/screens/WeatherApi.kt b/app/src/main/java/com/example/myapplication/screens/WeatherApi.kt
+new file mode 100644
+--- /dev/null	
++++ b/app/src/main/java/com/example/myapplication/screens/WeatherApi.kt	
+@@ -0,0 +1,18 @@
++package com.example.myapplication.screens
++
++import com.example.myapplication.API_KEY
++import com.example.myapplication.data.WeatherDto
++import retrofit2.http.GET
++import retrofit2.http.Query
++
++interface WeatherApi {
++    @GET("forecast.json")
++    suspend fun getWeather(
++        @Query("q") city: String,
++        @Query("key") apiKey: String = API_KEY,
++        @Query("days") days: Int = 3,
++        @Query("aqi") aqi: String = "no",
++        @Query("alerts") alerts: String = "no",
++        @Query("lang") lang: String = "ru",
++    ): WeatherDto
++}
+\ No newline at end of file
+Index: build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// Top-level build file where you can add configuration options common to all sub-projects/modules.\r\nplugins {\r\n    id(\"com.android.application\") version \"8.1.2\" apply false\r\n    id(\"org.jetbrains.kotlin.android\") version \"1.8.10\" apply false\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/build.gradle.kts b/build.gradle.kts
+--- a/build.gradle.kts	
++++ b/build.gradle.kts	
+@@ -1,4 +1,8 @@
+ // Top-level build file where you can add configuration options common to all sub-projects/modules.
++buildscript {
++    val agp_version by extra("8.1.2")
++}
++
+ plugins {
+     id("com.android.application") version "8.1.2" apply false
+     id("org.jetbrains.kotlin.android") version "1.8.10" apply false

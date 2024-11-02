@@ -1,0 +1,98 @@
+Index: app/src/main/java/com/example/myapplication/data/WeatherModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.myapplication.data\r\n\r\ndata class WeatherModel(\r\n    val city: String,\r\n    val time: String,\r\n    val currentTemp: String,\r\n    val condition: String,\r\n    val icon: String,\r\n    val maxTemp: String,\r\n    val minTemp: String,\r\n    val hours: String\r\n)
+===================================================================
+diff --git a/app/src/main/java/com/example/myapplication/data/WeatherModel.kt b/app/src/main/java/com/example/myapplication/data/WeatherModel.kt
+--- a/app/src/main/java/com/example/myapplication/data/WeatherModel.kt	
++++ b/app/src/main/java/com/example/myapplication/data/WeatherModel.kt	
+@@ -8,5 +8,5 @@
+     val icon: String,
+     val maxTemp: String,
+     val minTemp: String,
+-    val hours: String
++    val hours: List<HourDto>
+ )
+\ No newline at end of file
+Index: app/src/main/java/com/example/myapplication/screens/MainScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.myapplication.screens\r\n\r\nimport androidx.compose.foundation.ExperimentalFoundationApi\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.Row\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.layout.size\r\nimport androidx.compose.foundation.shape.RoundedCornerShape\r\nimport androidx.compose.material3.Card\r\nimport androidx.compose.material3.CardDefaults\r\nimport androidx.compose.material3.Icon\r\nimport androidx.compose.material3.IconButton\r\nimport androidx.compose.material3.Tab\r\nimport androidx.compose.material3.TabRow\r\nimport androidx.compose.material3.TabRowDefaults\r\nimport androidx.compose.material3.TabRowDefaults.tabIndicatorOffset\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.MutableState\r\nimport androidx.compose.runtime.rememberCoroutineScope\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.draw.clip\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.res.painterResource\r\nimport androidx.compose.ui.text.TextStyle\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport coil.compose.AsyncImage\r\nimport com.example.myapplication.R\r\nimport com.example.myapplication.data.WeatherModel\r\nimport com.example.myapplication.ui.theme.BlueLight\r\nimport com.google.accompanist.pager.ExperimentalPagerApi\r\nimport com.google.accompanist.pager.HorizontalPager\r\nimport com.google.accompanist.pager.rememberPagerState\r\nimport kotlinx.coroutines.launch\r\nimport org.json.JSONArray\r\nimport org.json.JSONObject\r\n\r\n@Composable\r\nfun MainCard(currentDay: MutableState<WeatherModel>, onClickSync: () -> Unit, onClickSearch: () -> Unit) {\r\n    Column(\r\n        modifier = Modifier\r\n            .padding(5.dp),\r\n\r\n        ) {\r\n        Card(\r\n            modifier = Modifier.fillMaxWidth(),\r\n            shape = RoundedCornerShape(10.dp),\r\n            colors = CardDefaults.cardColors(\r\n                containerColor = BlueLight\r\n            ),\r\n            elevation = CardDefaults.cardElevation(\r\n                defaultElevation = 0.dp\r\n            )\r\n\r\n        ) {\r\n            Column(\r\n                modifier = Modifier.fillMaxWidth(),\r\n                horizontalAlignment = Alignment.CenterHorizontally\r\n            ) {\r\n                Column(\r\n                    modifier = Modifier.fillMaxWidth(),\r\n                    horizontalAlignment = Alignment.CenterHorizontally\r\n                ) {\r\n                    Row(\r\n                        modifier = Modifier.fillMaxWidth(),\r\n                        horizontalArrangement = Arrangement.SpaceBetween\r\n                    ) {\r\n                        Text(\r\n                            modifier = Modifier.padding(top = 8.dp),\r\n                            text = currentDay.value.time,\r\n                            style = TextStyle(fontSize = 15.sp),\r\n                            color = Color.White\r\n                        )\r\n                        AsyncImage(\r\n                            model = \"https:\" + currentDay.value.icon,\r\n                            contentDescription = \"im2\",\r\n                            modifier = Modifier\r\n                                .padding(\r\n                                    top = 3.dp,\r\n                                    end = 8.dp\r\n                                )\r\n                                .size(35.dp)\r\n                        )\r\n\r\n                    }\r\n                    Text(\r\n                        text = currentDay.value.city,\r\n                        style = TextStyle(fontSize = 25.sp),\r\n                        color = Color.White\r\n                    )\r\n                    Text(\r\n                        text = if(currentDay.value.currentTemp.isNotEmpty())\r\n                            currentDay.value.currentTemp.toFloat().toInt().toString() + \"°C\"\r\n                        else currentDay.value.maxTemp.toFloat().toInt().toString() +\r\n                                \"°C/${currentDay.value.minTemp.toFloat().toInt()}°C\",\r\n                        style = TextStyle(fontSize = 65.sp),\r\n                        color = Color.White\r\n                    )\r\n                    Text(\r\n                        text = currentDay.value.condition,\r\n                        style = TextStyle(fontSize = 16.sp),\r\n                        color = Color.White\r\n                    )\r\n                    Row(\r\n                        modifier = Modifier.fillMaxWidth(),\r\n                        horizontalArrangement = Arrangement.SpaceBetween\r\n                    ) {\r\n                        IconButton(\r\n                            onClick = {\r\n                                onClickSearch.invoke()\r\n                            }\r\n                        ) {\r\n                            Icon(\r\n                                painter = painterResource(id = R.drawable.ic_search),\r\n                                contentDescription = \"im3\",\r\n                                tint = Color.White\r\n\r\n                            )\r\n                        }\r\n                        Text(\r\n                            text = \"${currentDay.value\r\n                                .maxTemp.toFloat().toInt()}°C/${currentDay\r\n                                .value.minTemp.toFloat().toInt()}°C\",\r\n                            style = TextStyle(fontSize = 16.sp),\r\n                            color = Color.White\r\n                        )\r\n                        IconButton(\r\n                            onClick = {\r\n                                onClickSync.invoke()\r\n                            }\r\n                        ) {\r\n                            Icon(\r\n                                painter = painterResource(id = R.drawable.ic_sync),\r\n                                contentDescription = \"im4\",\r\n                                tint = Color.White\r\n\r\n                            )\r\n                        }\r\n                    }\r\n                }\r\n\r\n            }\r\n\r\n        }\r\n    }\r\n}\r\n\r\n@OptIn(ExperimentalFoundationApi::class)\r\n@Composable\r\nfun TabLayout(daysList: MutableState<List<WeatherModel>>, currentDay: MutableState<WeatherModel>) {\r\n    val tabList = listOf(\"HOURS\", \"DAYS\")\r\n    val pagerState = androidx.compose.foundation.pager.rememberPagerState()\r\n    val tabIndex = pagerState.currentPage\r\n    val coroutineScope = rememberCoroutineScope()\r\n\r\n    Column(\r\n        modifier = Modifier\r\n            .padding(\r\n                start = 5.dp,\r\n                end = 5.dp\r\n            )\r\n            .clip(RoundedCornerShape(5.dp))\r\n    ) {\r\n        TabRow(\r\n            selectedTabIndex = tabIndex,\r\n            indicator = { pos ->\r\n                TabRowDefaults.Indicator(\r\n                    Modifier.tabIndicatorOffset(pos[tabIndex]),\r\n                    height = 2.dp,\r\n                    color = Color.White\r\n                )\r\n            },\r\n            containerColor = BlueLight,\r\n            contentColor = Color.White\r\n        ) {\r\n            tabList.forEachIndexed { index, text ->\r\n                Tab(\r\n                    selected = false,\r\n                    onClick = {\r\n                        coroutineScope.launch {\r\n                            pagerState.animateScrollToPage(index)\r\n                        }\r\n                    },\r\n                    text = {\r\n                        Text(text = text)\r\n                    }\r\n                )\r\n            }\r\n        }\r\n        androidx.compose.foundation.pager.HorizontalPager(\r\n            pageCount = tabList.size,\r\n            state = pagerState,\r\n            modifier = Modifier.weight(1.0f)\r\n        ) { index ->\r\n            val list = when (index) {\r\n                0 -> getWeatherByHours(currentDay.value.hours)\r\n                1 -> daysList.value\r\n                else -> daysList.value\r\n            }\r\n            MainList(list, currentDay)\r\n        }\r\n    }\r\n\r\n\r\n}\r\n\r\nprivate fun getWeatherByHours(hours: String): List<WeatherModel>{\r\n    if( hours.isEmpty()) return listOf()\r\n    val hoursArray = JSONArray(hours)\r\n    val list = ArrayList<WeatherModel>()\r\n    for (i in 0 until hoursArray.length()){\r\n        val item = hoursArray[i] as JSONObject\r\n        list.add(\r\n            WeatherModel(\r\n                \"\",\r\n                item.getString(\"time\"),\r\n                item.getString(\"temp_c\").toFloat().toInt().toString()+\"°C\",\r\n                item.getJSONObject(\"condition\").getString(\"text\"),\r\n                item.getJSONObject(\"condition\").getString(\"icon\"),\r\n                \"\",\r\n                \"\",\r\n                \"\"\r\n            )\r\n        )\r\n    }\r\n    return list\r\n}
+===================================================================
+diff --git a/app/src/main/java/com/example/myapplication/screens/MainScreen.kt b/app/src/main/java/com/example/myapplication/screens/MainScreen.kt
+--- a/app/src/main/java/com/example/myapplication/screens/MainScreen.kt	
++++ b/app/src/main/java/com/example/myapplication/screens/MainScreen.kt	
+@@ -30,14 +30,10 @@
+ import androidx.compose.ui.unit.sp
+ import coil.compose.AsyncImage
+ import com.example.myapplication.R
++import com.example.myapplication.data.HourDto
+ import com.example.myapplication.data.WeatherModel
+ import com.example.myapplication.ui.theme.BlueLight
+-import com.google.accompanist.pager.ExperimentalPagerApi
+-import com.google.accompanist.pager.HorizontalPager
+-import com.google.accompanist.pager.rememberPagerState
+ import kotlinx.coroutines.launch
+-import org.json.JSONArray
+-import org.json.JSONObject
+ 
+ @Composable
+ fun MainCard(currentDay: MutableState<WeatherModel>, onClickSync: () -> Unit, onClickSearch: () -> Unit) {
+@@ -94,9 +90,9 @@
+                     )
+                     Text(
+                         text = if(currentDay.value.currentTemp.isNotEmpty())
+-                            currentDay.value.currentTemp.toFloat().toInt().toString() + "°C"
+-                        else currentDay.value.maxTemp.toFloat().toInt().toString() +
+-                                "°C/${currentDay.value.minTemp.toFloat().toInt()}°C",
++                            currentDay.value.currentTemp
++                        else currentDay.value.maxTemp +
++                                "°C/${currentDay.value.minTemp}",
+                         style = TextStyle(fontSize = 65.sp),
+                         color = Color.White
+                     )
+@@ -123,8 +119,8 @@
+                         }
+                         Text(
+                             text = "${currentDay.value
+-                                .maxTemp.toFloat().toInt()}°C/${currentDay
+-                                .value.minTemp.toFloat().toInt()}°C",
++                                .maxTemp}/${currentDay
++                                .value.minTemp}",
+                             style = TextStyle(fontSize = 16.sp),
+                             color = Color.White
+                         )
+@@ -208,22 +204,20 @@
+ 
+ }
+ 
+-private fun getWeatherByHours(hours: String): List<WeatherModel>{
+-    if( hours.isEmpty()) return listOf()
+-    val hoursArray = JSONArray(hours)
++private fun getWeatherByHours(hours: List<HourDto>): List<WeatherModel> {
++    if (hours.isEmpty()) return listOf()
+     val list = ArrayList<WeatherModel>()
+-    for (i in 0 until hoursArray.length()){
+-        val item = hoursArray[i] as JSONObject
++    hours.forEach { item ->
+         list.add(
+             WeatherModel(
+-                "",
+-                item.getString("time"),
+-                item.getString("temp_c").toFloat().toInt().toString()+"°C",
+-                item.getJSONObject("condition").getString("text"),
+-                item.getJSONObject("condition").getString("icon"),
+-                "",
+-                "",
+-                ""
++                city = "",
++                time = item.time,
++                currentTemp = item.tempC.toFloat().toInt().toString() + "°C",
++                condition = item.condition.text,
++                icon = item.condition.icon,
++                maxTemp = "",
++                minTemp = "",
++                hours = listOf()
+             )
+         )
+     }

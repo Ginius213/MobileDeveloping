@@ -30,14 +30,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.myapplication.R
+import com.example.myapplication.data.HourDto
 import com.example.myapplication.data.WeatherModel
 import com.example.myapplication.ui.theme.BlueLight
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
-import org.json.JSONArray
-import org.json.JSONObject
 
 @Composable
 fun MainCard(currentDay: MutableState<WeatherModel>, onClickSync: () -> Unit, onClickSearch: () -> Unit) {
@@ -94,9 +90,9 @@ fun MainCard(currentDay: MutableState<WeatherModel>, onClickSync: () -> Unit, on
                     )
                     Text(
                         text = if(currentDay.value.currentTemp.isNotEmpty())
-                            currentDay.value.currentTemp.toFloat().toInt().toString() + "°C"
-                        else currentDay.value.maxTemp.toFloat().toInt().toString() +
-                                "°C/${currentDay.value.minTemp.toFloat().toInt()}°C",
+                            currentDay.value.currentTemp
+                        else currentDay.value.maxTemp +
+                                "°C/${currentDay.value.minTemp}",
                         style = TextStyle(fontSize = 65.sp),
                         color = Color.White
                     )
@@ -123,8 +119,8 @@ fun MainCard(currentDay: MutableState<WeatherModel>, onClickSync: () -> Unit, on
                         }
                         Text(
                             text = "${currentDay.value
-                                .maxTemp.toFloat().toInt()}°C/${currentDay
-                                .value.minTemp.toFloat().toInt()}°C",
+                                .maxTemp}/${currentDay
+                                .value.minTemp}",
                             style = TextStyle(fontSize = 16.sp),
                             color = Color.White
                         )
@@ -208,22 +204,20 @@ fun TabLayout(daysList: MutableState<List<WeatherModel>>, currentDay: MutableSta
 
 }
 
-private fun getWeatherByHours(hours: String): List<WeatherModel>{
-    if( hours.isEmpty()) return listOf()
-    val hoursArray = JSONArray(hours)
+private fun getWeatherByHours(hours: List<HourDto>): List<WeatherModel> {
+    if (hours.isEmpty()) return listOf()
     val list = ArrayList<WeatherModel>()
-    for (i in 0 until hoursArray.length()){
-        val item = hoursArray[i] as JSONObject
+    hours.forEach { item ->
         list.add(
             WeatherModel(
-                "",
-                item.getString("time"),
-                item.getString("temp_c").toFloat().toInt().toString()+"°C",
-                item.getJSONObject("condition").getString("text"),
-                item.getJSONObject("condition").getString("icon"),
-                "",
-                "",
-                ""
+                city = "",
+                time = item.time,
+                currentTemp = item.tempC.toFloat().toInt().toString() + "°C",
+                condition = item.condition.text,
+                icon = item.condition.icon,
+                maxTemp = "",
+                minTemp = "",
+                hours = listOf()
             )
         )
     }
