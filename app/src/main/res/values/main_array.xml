@@ -7,25 +7,29 @@
         <item>Фрукты</item>
         <item>Овощи</item>
     </string-array>
-        <string-array name="mushrooms">
-            <item>Лисичка|lesichka.png|lisichka.html</item>
-            <item>Мухамор|muhamor.png|lisichka.html</item>
-        </string-array>
-        <string-array name="medicinal_herbs">
-            <item>Ромашка|romashka.png|lisichka.html</item>
-            <item>Крапива|krapiva.png|lisichka.html</item>
-        </string-array>
-        <string-array name="trees">
-            <item>Тополь|topol.png|lisichka.html</item>
-            <item>Дуб|dub.png|lisichka.html</item>
-        </string-array>
-        <string-array name="fruits">
-            <item>Апельсин|apelsin.png|lisichka.html</item>
-            <item>Яблоко|yabloco.png|lisichka.html</item>
-        </string-array>
-        <string-array name="vegetables">
-            <item>Капуста|kapusta.png|lisichka.html</item>
-            <item>Свекла|svekla.png|lisichka.html</item>
-        </string-array>
 
+    <string-array name="mushrooms">
+        <item>Лисичка|lesichka.png|lisichka.html</item>
+        <item>Мухамор|muhamor.png|muhomor.html</item>
+    </string-array>
+
+    <string-array name="medicinal_herbs">
+        <item>Ромашка|romashka.png|romashka.html</item>
+        <item>Крапива|krapiva.png|krapiva.html</item>
+    </string-array>
+
+    <string-array name="trees">
+        <item>Тополь|topol.png|topol.html</item>
+        <item>Дуб|dub.png|dub.html</item>
+    </string-array>
+
+    <string-array name="fruits">
+        <item>Апельсин|apelsin.png|apelsin.html</item>
+        <item>Яблоко|yabloco.png|yabloco.html</item>
+    </string-array>
+
+    <string-array name="vegetables">
+        <item>Капуста|kapusta.png|kapusta.html</item>
+        <item>Свекла|svekla.png|svekla.html</item>
+    </string-array>
 </resources>
